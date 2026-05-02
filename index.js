@@ -33,17 +33,20 @@ const initDb = async () => {
 };
 initDb();
 
-// Ruta para recibir los datos del formulario
+
+// Ruta corregida para recibir los datos del formulario
 app.post('/api/rsvp', async (req, res) => {
-  const { nombre, apellido, familia, asistencia, mensaje } = req.body;
+  // Cambiamos 'asistencia' por 'acompanantes' para que coincida con tu HTML
+  const { nombre, apellido, familia, acompanantes, mensaje } = req.body;
+  
   try {
     const result = await pool.query(
       'INSERT INTO invitados (nombre, apellido, familia, asistencia, mensaje) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [nombre, apellido, familia, asistencia, mensaje]
+      [nombre, apellido, familia, acompanantes, mensaje] // Usamos la variable acompanantes aquí
     );
     res.status(200).json({ success: true, data: result.rows[0] });
   } catch (err) {
-    console.error(err);
+    console.error("Error al guardar en BD:", err);
     res.status(500).json({ success: false, error: "Error al guardar" });
   }
 });
